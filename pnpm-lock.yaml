@@ -2,10 +2,11 @@ lockfileVersion: 5.3
 
 specifiers:
   '@commitlint/cli': ^16.2.1
-  '@micra/commit-lint-config': ^0.1.0-next.1
-  '@micra/eslint-config': ^0.1.0-next.1
-  '@micra/typescript-config': ^0.1.0-next.1
-  '@micra/vite-config': ^0.1.0-next.2
+  '@micra/commit-lint-config': next
+  '@micra/core': next
+  '@micra/eslint-config': next
+  '@micra/typescript-config': next
+  '@micra/vite-config': next
   '@types/node': ^17.0.21
   c8: ^7.11.0
   concurrently: ^7.0.0
@@ -23,6 +24,7 @@ specifiers:
 devDependencies:
   '@commitlint/cli': 16.2.1
   '@micra/commit-lint-config': 0.1.0-next.1_@commitlint+cli@16.2.1
+  '@micra/core': 0.1.0-next.3
   '@micra/eslint-config': 0.1.0-next.1_83bc012e22a441999bc7e52466863909
   '@micra/typescript-config': 0.1.0-next.1
   '@micra/vite-config': 0.1.0-next.2_418ccc019ab116d597fd339a95d956bc
@@ -282,6 +284,10 @@ packages:
     dependencies:
       '@commitlint/cli': 16.2.1
       '@commitlint/config-conventional': 16.2.1
+    dev: true
+
+  /@micra/core/0.1.0-next.3:
+    resolution: {integrity: sha512-+C2zBve+j2Ms7LGzGM3zijVQqdFgqCHGm0jiN5UjjTZZIAXJpc/AY+RVTdxBDEGNipftmLrUd9awyRUMAmfiSg==}
     dev: true
 
   /@micra/eslint-config/0.1.0-next.1_83bc012e22a441999bc7e52466863909:
