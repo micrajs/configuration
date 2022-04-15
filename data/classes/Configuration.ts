@@ -1,8 +1,16 @@
 import {get} from '../utilities/get';
 import {set} from '../utilities/set';
-import type {PathsOf, PathValue} from '@micra/core/utilities/DotNotation';
+import {EventEmitter} from '@micra/event-emitter';
+import type {
+  PathsOf,
+  PathValue,
+  PathValueUnion,
+} from '@micra/core/utilities/DotNotation';
 
-export class Configuration implements Micra.Configuration {
+export class Configuration
+  extends EventEmitter<Micra.ConfigurationEvents>
+  implements Micra.Configuration
+{
   definitions: Application.Configurations = {} as Application.Configurations;
 
   get<Key extends PathsOf<Application.Configurations>>(
@@ -32,5 +40,9 @@ export class Configuration implements Micra.Configuration {
     value: PathValue<Application.Configurations, Path>,
   ): void {
     set(this.definitions, (path as string).split('.'), value);
+    this.emit('set', {
+      path,
+      value,
+    } as PathValueUnion<Application.Configurations>);
   }
 }

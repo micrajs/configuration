@@ -11,6 +11,10 @@ declare global {
   }
 }
 
+async function waitFor(time = 0) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 describe('Configuration tests', () => {
   it('should retrieve a configuration value', () => {
     const config = new Configuration();
@@ -141,6 +145,48 @@ describe('Configuration tests', () => {
       test: {
         test: 'test',
       },
+    });
+  });
+
+  it('should emit a set event when a value is set to a given path', async () => {
+    const config = new Configuration();
+
+    let event: Micra.ConfigurationEvents['set'];
+    config.on('set', (value) => {
+      event = value;
+    });
+
+    config.set('test', {
+      test: 'test',
+    });
+
+    await waitFor();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(event!).toEqual({
+      path: 'test',
+      value: {
+        test: 'test',
+      },
+    });
+  });
+
+  it('should emit a set event when a nested value is set to a given path', async () => {
+    const config = new Configuration();
+
+    let event: Micra.ConfigurationEvents['set'];
+    config.on('set', (value) => {
+      event = value;
+    });
+
+    config.set('test.test', 'test');
+
+    await waitFor();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(event!).toEqual({
+      path: 'test.test',
+      value: 'test',
     });
   });
 });
