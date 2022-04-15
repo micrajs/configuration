@@ -1,35 +1,36 @@
 import {get} from '../utilities/get';
 import {set} from '../utilities/set';
+import type {PathsOf, PathValue} from '@micra/core/utilities/DotNotation';
 
 export class Configuration implements Micra.Configuration {
-  definitions: Application.Configurations = {};
+  definitions: Application.Configurations = {} as Application.Configurations;
 
-  get<Key extends keyof Application.Configurations>(
+  get<Key extends PathsOf<Application.Configurations>>(
     key: Key,
-  ): Application.Configurations[Key] | undefined;
-  get<Key extends keyof Application.Configurations>(
+  ): PathValue<Application.Configurations, Key> | undefined;
+  get<Key extends PathsOf<Application.Configurations>>(
     key: Key,
-    fallback: Application.Configurations[Key],
-  ): Application.Configurations[Key];
-  get<Key extends keyof Application.Configurations>(
+    fallback: PathValue<Application.Configurations, Key>,
+  ): PathValue<Application.Configurations, Key>;
+  get<Key extends PathsOf<Application.Configurations>>(
     key: Key,
-    fallback?: keyof Application.Configurations,
-  ): Application.Configurations[Key] | undefined;
-  get<Key extends keyof Application.Configurations>(
+    fallback?: PathValue<Application.Configurations, Key>,
+  ): PathValue<Application.Configurations, Key> | undefined;
+  get<Key extends PathsOf<Application.Configurations>>(
     key: Key,
-    fallback?: Application.Configurations[Key],
-  ): Application.Configurations[Key] | undefined {
-    return get(this.definitions, (key as string).split('.')) ?? fallback;
+    fallback?: PathValue<Application.Configurations, Key>,
+  ): PathValue<Application.Configurations, Key> | undefined {
+    return get(this.definitions, key) ?? fallback;
   }
 
-  has<Key extends keyof Application.Configurations>(key: Key): boolean {
-    return get(this.definitions, (key as string).split('.')) !== undefined;
+  has<Key extends PathsOf<Application.Configurations>>(key: Key): boolean {
+    return get(this.definitions, key) !== undefined;
   }
 
-  set<Key extends keyof Application.Configurations>(
-    key: Key,
-    value: Application.Configurations[Key],
+  set<Path extends PathsOf<Application.Configurations>>(
+    path: Path,
+    value: PathValue<Application.Configurations, Path>,
   ): void {
-    set(this.definitions, (key as string).split('.'), value);
+    set(this.definitions, (path as string).split('.'), value);
   }
 }

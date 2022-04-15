@@ -1,21 +1,25 @@
-export function set(obj: any, parts: string[], value: any): boolean {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function set<T extends Record<any, any>>(
+  obj: T,
+  [part, ...parts]: string[],
+  value: unknown,
+): void {
+  if (!part || typeof obj !== 'object' || obj == null || Array.isArray(obj)) {
+    return;
+  }
+
   if (parts.length === 0) {
-    return false;
+    obj[part as keyof T] = value as T[keyof T];
+    return;
   }
 
-  const part = parts.shift();
-  if (part && part in obj) {
-    if (parts.length === 0) {
-      obj[part] = value;
-      return true;
-    }
-
-    if (obj[part] === null) {
-      obj[part] = {};
-    }
-
-    return set(parts, obj[part], value);
+  if (
+    typeof obj[part] !== 'object' ||
+    obj[part] == null ||
+    Array.isArray(obj[part])
+  ) {
+    obj[part as keyof T] = {} as T[keyof T];
   }
 
-  return false;
+  return set(obj[part], parts, value);
 }
