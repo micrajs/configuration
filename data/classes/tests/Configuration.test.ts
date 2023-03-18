@@ -4,6 +4,7 @@ import {Configuration} from '../Configuration';
 declare global {
   namespace Application {
     interface Configurations {
+      shallow: number;
       test: {
         test: string;
       };
@@ -187,6 +188,86 @@ describe('Configuration tests', () => {
     expect(event!).toEqual({
       path: 'test.test',
       value: 'test',
+    });
+  });
+
+  it('creates a scoped configuration', async () => {
+    const config = new Configuration();
+
+    const scopedConfig = config.createScope();
+
+    expect(scopedConfig).toBeInstanceOf(Configuration);
+    expect(scopedConfig.definitions).toEqual({});
+  });
+
+  it('should set values to a scoped configuration', async () => {
+    const config = new Configuration();
+
+    const scopedConfig = config.createScope();
+
+    scopedConfig.set('test.test', 'test');
+
+    expect(scopedConfig.definitions).toEqual({
+      test: {
+        test: 'test',
+      },
+    });
+  });
+
+  it("inherits values from the scope's parent", async () => {
+    const config = new Configuration();
+
+    config.set('test.test', 'test');
+
+    const scopedConfig = config.createScope();
+
+    expect(scopedConfig.get('test.test')).toBe('test');
+  });
+
+  it('should override values from the scope parent', async () => {
+    const config = new Configuration();
+
+    config.set('test.test', 'test');
+
+    const scopedConfig = config.createScope();
+
+    scopedConfig.set('test.test', 'test2');
+
+    expect(scopedConfig.get('test.test')).toBe('test2');
+  });
+
+  it('should not expose scoped values in the parent configuration', async () => {
+    const config = new Configuration();
+
+    const scopedConfig = config.createScope();
+
+    scopedConfig.set('test.test', 'test');
+
+    expect(config.get('test.test')).toBeUndefined();
+  });
+
+  it('should emit a set event when a value is set to a scoped configuration', async () => {
+    const config = new Configuration();
+
+    const scopedConfig = config.createScope();
+
+    let event: Micra.ConfigurationEvents['set'];
+    scopedConfig.on('set', (value) => {
+      event = value;
+    });
+
+    scopedConfig.set('test', {
+      test: 'test',
+    });
+
+    await waitFor();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    expect(event!).toEqual({
+      path: 'test',
+      value: {
+        test: 'test',
+      },
     });
   });
 });

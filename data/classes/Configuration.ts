@@ -45,4 +45,11 @@ export class Configuration
       value,
     } as PathValueUnion<Application.Configurations>);
   }
+
+  createScope(): Configuration {
+    const scoped = new Configuration();
+    scoped.definitions = {...this.definitions};
+    scoped.on('set', (event) => this.emit('set', event));
+    return scoped;
+  }
 }
